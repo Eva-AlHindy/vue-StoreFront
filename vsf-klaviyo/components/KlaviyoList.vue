@@ -4,7 +4,8 @@
     <p>I see {{ totalTvCount }} TVs!</p>
     <p v-show="!totalTvCount">I can't buy any..</p>
     <p v-show="happyStaff">The staff seems happy!</p>
-    <p v-show="!totalTvCount">I can't buy any..</p>
+    <p v-show="showSubscribed">Subscribed to the News Letter</p>
+    <p v-show="showSubscribed">The Emails list is: {{ showEmailsList }}</p>
     <button
       :disabled="!totalTvCount"
       @click="buyTv">
@@ -15,6 +16,7 @@
       @click="buyTwoTvs">
       Buy Two TVs
     </button>
+    <button @click="showSubscribe"> Show Subscribe </button>
   </div>
 </template>
 
@@ -29,6 +31,12 @@ module.exports = {
     happyStaff () {
       // Check in the getter if the staff is happy
       return this.$store.getters['klaviyo/happyStaff']
+    },
+    showSubscribed () {
+      return this.$store.getters['klaviyo/isSubscribedNewsLetter']
+    },
+    showEmailsList() {
+      return this.$store.state.klaviyo.emailsList
     }
   },
   methods: {
@@ -36,9 +44,12 @@ module.exports = {
       console.log("buyTV - METHOD")
       this.$store.dispatch('klaviyo/removeTv',1)
     },
-  buyTwoTvs() {
-      // Dispatch the action to buy two TVs
-      this.$store.dispatch('klaviyo/removeTv', 2)
+    buyTwoTvs() {
+      console.log("buyTV - METHOD")
+      this.$store.dispatch('klaviyo/removeTv',2)
+    },
+  showSubscribe() {
+      this.$store.dispatch('klaviyo/status')
     }
   }
 }
