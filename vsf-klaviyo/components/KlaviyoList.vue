@@ -48,8 +48,8 @@ module.exports = {
       console.log("buyTV - METHOD")
       this.$store.dispatch('klaviyo/removeTv',2)
     },
-  showSubscribe() {
-      this.$store.dispatch('klaviyo/status')
+    showSubscribe() {
+      this.$store.dispatch('klaviyo/status','eva@kodbruket.se')
     }
   }
 }

@@ -3,7 +3,7 @@ import { Router } from 'express'
 
 module.exports = ({ config, db }) => {
   let klaviyoApi = Router()
-
+  let listId=config.extensions.klaviyo.listId
   // const pickProperListId = (res, storeCode = null) => {
   //   if (config.storeViews.multistore === true && storeCode !== null) {
   //     if (!('multistoreListIds' in config.extensions.klaviyo)) {
@@ -23,7 +23,6 @@ module.exports = ({ config, db }) => {
    * GET lists (eva-----)
    */
   klaviyoApi.get('/lists', (req, res) => {
-    let listId=config.extensions.klaviyo.listId
     let request = require('request')
     request({
       url: config.extensions.klaviyo.apiUrl + '/v2/list/' + listId ,
@@ -81,24 +80,24 @@ module.exports = ({ config, db }) => {
    * POST Subscribe to List
    */
   klaviyoApi.post('/subscribe', (req, res) => {
-    let userData = req.body
-
-    if (!userData.email) {
+    let user = req.body
+    console.log("user",req.body)
+    if (!user.email) {
       apiStatus(res, 'Invalid e-mail provided!', 500)
       return
     }
 
-    let listId = null
-
-    if (config.storeViews.multistore === true) {
-      if (!userData.storeCode) {
-        apiStatus(res, 'Provide storeCode!', 500)
-        return
-      }
-      listId = pickProperListId(res, userData.storeCode)
-    } else {
-      listId = pickProperListId(res)
-    }
+    // let listId = null
+    //
+    // if (config.storeViews.multistore === true) {
+    //   if (!userData.storeCode) {
+    //     apiStatus(res, 'Provide storeCode!', 500)
+    //     return
+    //   }
+    //   listId = pickProperListId(res, user.storeCode)
+    // } else {
+    //   listId = pickProperListId(res)
+    // }
 
     let request = require('request')
 
@@ -107,7 +106,7 @@ module.exports = ({ config, db }) => {
       method: 'POST',
       headers: { 'api-key': config.extensions.klaviyo.apiKey },
       json: true,
-      body: { profiles: [ { email: userData.email } ] }
+      body: { profiles: [ { email: user.email } ] }
     }, (error, response, body) => {
       if (error) {
         apiStatus(res, error, 500)
@@ -119,6 +118,7 @@ module.exports = ({ config, db }) => {
 
   klaviyoApi.post('/subscribe-advanced', (req, res) => {
     let userData = req.body
+
 
     if (!userData.email) {
       apiStatus(res, 'Invalid e-mail provided!', 500)
